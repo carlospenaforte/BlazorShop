@@ -1,5 +1,6 @@
 ﻿using BlazorShop.API.Data;
 using BlazorShop.API.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorShop.API.Repositories
 {
@@ -14,17 +15,29 @@ namespace BlazorShop.API.Repositories
 
         public async Task<Product> GetItem(int id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products
+                        .Include(c => c.Category)
+                        .SingleOrDefaultAsync(c => c.Id == id);
+
+            return product;
         }
 
         public async Task<IEnumerable<Product>> GetItems()
         {
-            throw new NotImplementedException();
+            var products = await _context.Products
+                        .Include(p => p.Category)
+                        .ToListAsync();
+
+            return products;
         }
 
         public async Task<IEnumerable<Product>> GetItemsCategory(int id)
         {
-            throw new NotImplementedException();
+            var products = await _context.Products
+                        .Include(p => p.Category)
+                        .Where(p => p.CategoryId == id).ToListAsync();
+
+            return products;
         }
     }
 }
